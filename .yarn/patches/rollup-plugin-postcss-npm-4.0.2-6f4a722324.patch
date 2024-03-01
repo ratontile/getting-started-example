@@ -1,0 +1,13 @@
+diff --git a/dist/index.js b/dist/index.js
+index 8ca4cf35ac17b3874f116a5620c6816854311099..61e209d4453b0230ab0d9c3d10962d8402e433d2 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -188,7 +188,7 @@ var normalizePath = (path => path && path.replace(/\\+/g, '/'));
+ 
+ const humanlizePath = filepath => normalizePath(path__default['default'].relative(process.cwd(), filepath));
+ 
+-const styleInjectPath = require.resolve('style-inject/dist/style-inject.es').replace(/[\\/]+/g, '/');
++const styleInjectPath = 'style-inject/dist/style-inject';
+ 
+ function loadConfig(id, {
+   ctx: configOptions,

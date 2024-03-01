@@ -1,0 +1,24 @@
+diff --git a/src/commands/test/index.js b/src/commands/test/index.js
+index e02fb819aa6971e1d03880f7b87e7313223b0e65..97e33bc36c9ea882d24f25061b4ceaf1c16d0bc4 100644
+--- a/src/commands/test/index.js
++++ b/src/commands/test/index.js
+@@ -53,11 +53,18 @@ async function test(args) {
+   }
+ 
+   const targetFilter = new RegExp(options.targetFilter);
++  console.log('storiesFilter', options.storiesFilter);
++  console.log('targetFilter ORIG', options.targetFilter);
++  console.log('targetFilter PICKED', targetFilter);
+   const configurationFilter = new RegExp(options.configurationFilter);
+   const matchesFilters = ({ target }, name) =>
+     targetFilter.test(target) && configurationFilter.test(name);
+ 
+-  const configurations = pickBy(matchesFilters, config.configurations);
++ 
++  console.log('configurations ALL: ', config.configurations);
++  const configurations = !options.targetFilter ? config.configurations : pickBy(matchesFilters, config.configurations);
++  console.log('configurations PICKED: ', configurations);
++  console.log('options PICKED: ', options);
+ 
+   if (Object.keys(configurations).length === 0) {
+     warn('No matching configurations');

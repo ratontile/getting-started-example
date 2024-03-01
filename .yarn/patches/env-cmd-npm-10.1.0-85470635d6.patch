@@ -1,0 +1,72 @@
+diff --git a/dist/env-cmd.js b/dist/env-cmd.js
+index 28b032bf14b9890a4e05fab06cf81cf350f0e3c7..c91d4805611392c7a8dfa28fc4979768217f4878 100644
+--- a/dist/env-cmd.js
++++ b/dist/env-cmd.js
+@@ -34,37 +34,59 @@ exports.CLI = CLI;
+  */
+ async function EnvCmd({ command, commandArgs, envFile, rc, options = {} }) {
+     var _a;
+-    let env = {};
++    let ourEnvironments = {};
++    let yourLocalEnvFile = {};
+     try {
+-        env = await get_env_vars_1.getEnvVars({ envFile, rc, verbose: options.verbose });
++        ourEnvironments = await get_env_vars_1.getEnvVars({ envFile, rc, verbose: options.verbose });
++        yourLocalEnvFile = await get_env_vars_1.getEnvVars({ envFile, verbose: options.verbose });
+     }
+     catch (e) {
+         if (!(_a = options.silent, (_a !== null && _a !== void 0 ? _a : false))) {
+             throw e;
+         }
+     }
++    if (options.verbose) {
++        console.log('Env-cmd options: ', options)
++        console.log('Envs in our environments: ', ourEnvironments)
++        console.log('Envs in process.env: ', process.env)
++        console.log('Envs in your local .env file: ', yourLocalEnvFile)
++    }
+     // Override the merge order if --no-override flag set
+     if (options.noOverride === true) {
+-        env = Object.assign({}, env, process.env);
++        ourEnvironments = Object.assign({}, ourEnvironments, yourLocalEnvFile, process.env);
++        if (options.verbose) {
++            console.log('Merging like this: Object.assign({}, ourEnvironments, yourLocalEnvFile, process.env)')
++        }
+     }
+     else {
+         // Add in the system environment variables to our environment list
+-        env = Object.assign({}, process.env, env);
++        ourEnvironments = Object.assign({}, yourLocalEnvFile, process.env, ourEnvironments);
++        if (options.verbose) {
++            console.log('Merging like this: Object.assign({}, yourLocalEnvFile, process.env, ourEnvironments)')
++        }
++    }
++    if (options.verbose) {
++        console.log('Envs in env & process.env merged: ', ourEnvironments)
+     }
+     if (options.expandEnvs === true) {
+-        command = expand_envs_1.expandEnvs(command, env);
+-        commandArgs = commandArgs.map(arg => expand_envs_1.expandEnvs(arg, env));
++        command = expand_envs_1.expandEnvs(command, ourEnvironments);
++        commandArgs = commandArgs.map(arg => expand_envs_1.expandEnvs(arg, ourEnvironments));
++    }
++
++    if (options.verbose) {
++        console.log('Command: ', command)
++        console.log('commandArgs: ', commandArgs)
+     }
+     // Execute the command with the given environment variables
+     const proc = spawn_1.spawn(command, commandArgs, {
+         stdio: 'inherit',
+         shell: options.useShell,
+-        env
++        env: ourEnvironments
+     });
+     // Handle any termination signals for parent and child proceses
+     const signals = new signal_termination_1.TermSignals({ verbose: options.verbose });
+     signals.handleUncaughtExceptions();
+     signals.handleTermSignals(proc);
+-    return env;
++    return ourEnvironments;
+ }
+ exports.EnvCmd = EnvCmd;

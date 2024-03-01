@@ -1,0 +1,42 @@
+diff --git a/dist/index.esm.js b/dist/index.esm.js
+index 118927b6db77dbcf13f7f49dec12651d1d28f3ee..f257a1a8aa72d6fd418b3348a11c05f52ccc7d62 100644
+--- a/dist/index.esm.js
++++ b/dist/index.esm.js
+@@ -943,8 +943,13 @@ var cancelTimeout = function (timeout) {
+ };
+ 
+ var getTransformStyles = function (x, y, scale) {
+-    return "translate3d(" + x + "px, " + y + "px, 0) scale(" + scale + ")";
++  const transform = "translate3d(" + x + "px, " + y + "px, 0)"
++  return {
++    transform,
++    scale
++  }
+ };
++
+ var getCenterPosition = function (scale, wrapperComponent, contentComponent) {
+     var contentWidth = contentComponent.offsetWidth * scale;
+     var contentHeight = contentComponent.offsetHeight * scale;
+@@ -1513,8 +1518,20 @@ var TransformContext = /** @class */ (function (_super) {
+             if (!_this.mounted || !_this.contentComponent)
+                 return;
+             var _a = _this.transformState, scale = _a.scale, positionX = _a.positionX, positionY = _a.positionY;
+-            var transform = getTransformStyles(positionX, positionY, scale);
+-            _this.contentComponent.style.transform = transform;
++            if (_this.props.onApplyTransformation) {
++              _this.props.onApplyTransformation({positionX, positionY, scale})
++            } else {
++              var transformStyles = getTransformStyles(positionX, positionY, scale);
++              var transform = transformStyles.transform;
++              var scale = transformStyles.scale;
++            
++              _this.contentComponent.style.transform = transform;
++              _this.contentComponent.style.width = scale * 100 + "%"
++              _this.contentComponent.style.height = scale * 100 + "%"
++              _this.contentComponent.style.maxWidth  = scale * 100 + "%"
++              _this.contentComponent.style.maxHeight = scale * 100 + "%"
++            }
++
+             _this.handleRef();
+         };
+         _this.handleRef = function () {

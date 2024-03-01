@@ -1,0 +1,23 @@
+diff --git a/src/create-chrome-target.js b/src/create-chrome-target.js
+index 69878eff92fdb2efaabf61eef2fb42049f4a4e6e..f72ca1e85e31072dc8cd28d1074f2217c12c69cb 100644
+--- a/src/create-chrome-target.js
++++ b/src/create-chrome-target.js
+@@ -410,6 +410,7 @@ function createChromeTarget(
+     } catch (err) {
+       if (err instanceof TimeoutError) {
+         debug(`Timed out waiting for "${url}" to load`);
++        throw err; // This line is added to rethrow the error instead of just logging it
+       } else {
+         throw err;
+       }
+@@ -417,6 +418,10 @@ function createChromeTarget(
+       await tab.close();
+     }
+ 
++    if (!screenshot) {
++      throw new Error('Screenshot is undefined'); // Ensure that screenshot is not undefined before returning it
++    }
++
+     return screenshot;
+   }
+ 

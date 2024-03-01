@@ -8,4 +8,17 @@ packages/remixapp/public/build
 .env
 
 .history
+
+############################
+# Yarn
+############################
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+# We use .yarnrc, lerna needs .npmrc but we want to prevent accidental commits
 .npmrc
