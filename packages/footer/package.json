@@ -1,12 +1,12 @@
 {
   "name": "footer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rimraf dist && rollup --config",
     "test": "jest",
-    "publish":"yarn lerna publish --force-git-tag"
+    "publish": "yarn lerna publish --force-git-tag"
   },
   "dependencies": {
     "@testing-library/react": "13.3.0",
