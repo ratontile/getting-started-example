@@ -5,7 +5,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rimraf dist && rollup --config",
-    "test": "jest"
+    "test": "jest",
+    "publish":"yarn lerna publish --force-git-tag"
   },
   "dependencies": {
     "@testing-library/react": "13.3.0",
@@ -22,5 +23,6 @@
   },
   "devDependencies": {
     "rimraf": "^3.0.2"
-  }
+  },
+  "gitHead": "043e64fa2a1864a4d51bd495262db0cf681f7935"
 }
